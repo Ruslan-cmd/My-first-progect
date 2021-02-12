@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Validator;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class ArticleController extends Controller
 {
@@ -37,14 +38,12 @@ public function create(){
 public function store(){
         //persist the new resource
 
-    $this->validateRequest();
-    Article::create(\request()->only(
-        [
-            'title',
-            'excerpt',
-            'body',
+    request()->validate([
+        'title'=>'required',
+        'excerpt'=>'required',
+        'body'=>'required',
+    ]);
 
-        ]));
 
 
     $article = new Article();
@@ -73,26 +72,4 @@ public function update($id){
 public function destroy(){
         //deleted the resource
 }
-
-    private function validateRequest(){
-        //глобальная функция находится в глобальном пространстве имен
-        Validator::make(\request()->only(
-            [
-                'title',
-                'excerpt',
-                'body',
-
-            ]),
-            [
-                'title' =>'required',
-                'excerpt' =>'required',
-                'body' =>'required',
-
-            ], [
-                'title.required' => 'Необходимо указать имя',
-                'excerpt.required' => 'Необходимо выбрать дату',
-                'body.required' => 'Необходимо выбрать время',
-
-            ])->validate();
-    }
 }
